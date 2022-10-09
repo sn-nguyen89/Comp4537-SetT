@@ -1,0 +1,103 @@
+Pokedex - Comp4537 - Set T - Steven Nguyen - A01231944
+----
+
+* **URL**
+
+https://guarded-citadel-53361.herokuapp.com/
+
+Paths:
+/api/v1/pokemons?count=2&after=10	// - get all the pokemons after the 10th. List only Two.
+/api/v1/pokemon               		// - create a new pokemon
+/api/v1/pokemon/:id                	// - get a pokemon
+/api/v1/pokemonImage/:id           	// - get a pokemon Image URL
+/api/v1/pokemon/:id               	// - upsert a whole pokemon document
+/api/v1/pokemon/:id               	// - patch a pokemon document or a portion of the pokemon document
+/api/v1/pokemon/:id	           	// - delete a  pokemon
+/api/v1/*				// - improper route
+
+:id params is the pokemon ID to find(get),create(post,put) or update(patch)
+
+* **Method:**
+
+	`GET` | `POST` | `DELETE` | `PUT` | 'PATCH'
+
+*  **URL Params**
+
+   **Required:**
+ 
+   	"id": {unique: true, type : Int}
+
+   **Optional:**
+
+	"name":'english': {
+			type: String,
+			maxLength: 20
+		},
+                'japanese': String,
+                'chinese': String,
+                'french': String
+            }
+	"type": {
+		type: [String],
+                enum: enumTypes
+	},
+	'base': {
+                'HP': Int,
+                'Attack': Int,
+                'Defense': Int,
+                'Special Attack': Int,
+                'Special Defense': Int,
+                'Speed': Int
+	
+	Enum types dynamically pulled from documents:
+	enums = ['Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 
+		'Steel', 'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice','Dragon','Dark', 'Fairy']
+
+* **Data Params**
+
+Sample Body Request for Post and Put
+{
+    "name": {
+      "english": "test",
+      "japanese": "test",
+      "chinese": "test",
+      "french": "test"
+    },
+    "base": {
+      "HP": 50,
+      "Attack": 20,
+      "Defense": 55,
+      "Speed": 30,
+      "Special Attack": 25,
+      "Special Defense": 25
+    },
+    
+    "id": 1000,
+    "type": [
+      "Bug"
+    ],
+  }
+
+* **Success Response:**
+
+  	All responses are in json format on success with msg:
+
+* **Error Response:**
+
+	All error responses are in json format on failure with errMsg"
+
+* **Sample Call:**
+
+  	curl https://guarded-citadel-53361.herokuapp.com/api/v1/pokemon     //gets all pokemon
+	//Sample Route 
+	app.get('/api/v1/pokemon', (req, res) => {
+  		pokemonModel.find({})
+        	.then(docs => {
+            		res.json(docs)
+	})
+        	.catch(err => {
+            	res.json({ errMsg: "db reading .. err.  Check with server devs" })
+        		})
+	})
+
+ 

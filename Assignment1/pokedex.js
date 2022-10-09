@@ -1,9 +1,8 @@
-const express = require('express');
-const { stringify } = require('querystring');
+const express = require('express')
 const app = express();
-//const axios = require('axios'),default to run on my machine;
-const axios = require('axios').default;
-const mongoose = require('mongoose');
+//const axios = require('axios'),default to run on my machine
+const axios = require('axios').default
+const mongoose = require('mongoose')
 const port = 5000;
 
 let pokemonModel;
