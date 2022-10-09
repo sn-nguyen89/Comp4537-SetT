@@ -1,0 +1,18 @@
+{
+  "name": "assignment1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pokedex.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.1.0",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.5",
+    "node": "^18.10.0"
+  }
+}
