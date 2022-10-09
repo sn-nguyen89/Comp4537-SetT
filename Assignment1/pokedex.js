@@ -1,11 +1,9 @@
 const express = require('express');
 const { stringify } = require('querystring');
 const app = express();
-const axios = require('axios');
+//const axios = require('axios'),default to run on my machine;
+const axios = require('axios').default;
 const mongoose = require('mongoose');
-const e = require('express');
-const { json } = require('stream/consumers');
-const { type } = require('os');
 const port = 5000;
 
 let pokemonModel;
