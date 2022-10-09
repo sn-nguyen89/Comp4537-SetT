@@ -1,7 +1,7 @@
 const express = require('express');
 const { stringify } = require('querystring');
 const app = express();
-const axios = require('axios').default;
+const axios = require('axios');
 const mongoose = require('mongoose');
 const e = require('express');
 const { json } = require('stream/consumers');
