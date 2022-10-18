@@ -161,36 +161,60 @@ app.delete('/api/v1/pokemon/:id', async (req, res) => {
 
 })
 
-app.get('/pokemonsAdvancedFiltering/', async (req , res) => {
-    let {id,base,type,name,page,hitsPerPage,sort,filteredProperties} = req.query
-    page = page || 1
-    hitsPerPage = hitsPerPage || 5
+//Midterm Prep
+// app.get('/pokemonsAdvancedFiltering/', async (req , res) => {
+//     let {id,base,type,name,page,hitsPerPage,sort,filteredProperties} = req.query
+//     page = page || 1
+//     hitsPerPage = hitsPerPage || 5
 
-    if (type) {
-        req.query.type = {
-          $in: type.split(",").map(item => item.trim())
-        }
-      }
+//     if (type) {
+//         req.query.type = {
+//           $in: type.split(",").map(item => item.trim())
+//         }
+//       }
       
-    if (sort) {
-        req.query.sort = sort.split(",").join(' ') 
-    }
+//     if (sort) {
+//         req.query.sort = sort.split(",").join(' ') 
+//     }
 
-    if (filteredProperties) {
-        req.query.filteredProperties ='-_id ' + filteredProperties.split(",").join(' ')
-    }
+//     if (filteredProperties) {
+//         req.query.filteredProperties ='-_id ' + filteredProperties.split(",").join(' ')
+//     }
 
-    console.log(req.query.filteredProperties)
+//     console.log(req.query.filteredProperties)
     
-    // if(req.query.length != null){
-        let pokemons = await pokemonModel.find(req.query, req.query.filteredProperties).sort(req.query.sort).skip((Number(page)-1)*Number(hitsPerPage)).limit(Number(hitsPerPage))
+//     // if(req.query.length != null){
+//         let pokemons = await pokemonModel.find(req.query, req.query.filteredProperties).sort(req.query.sort).skip((Number(page)-1)*Number(hitsPerPage)).limit(Number(hitsPerPage))
 
-        res.send({hits:pokemons, nbHits:pokemons.length, page: page, nbPages: (pokemons.length)/Number(hitsPerPage), query: req.query, params: req.url.substring(req.url.indexOf('?') + 1 )})
-    // } else{
-    //     let pokemons = await pokemonModel.find({})
-    //     res.send(pokemons)
-    // }
-})
+//         res.send({hits:pokemons, nbHits:pokemons.length, page: page, nbPages: (pokemons.length)/Number(hitsPerPage), query: req.query, params: req.url.substring(req.url.indexOf('?') + 1 )})
+//     // } else{
+//     //     let pokemons = await pokemonModel.find({})
+//     //     res.send(pokemons)
+//     // }
+// })
+
+//Final exam question
+app.get('/pokemonsAdvancedFiltering/', async (req , res) => {
+        let {id,base,type,name,comparisonOperators} = req.query
+        const regex = /(a|b|c)/g;
+        // console.log(req.query.comparisonOperators)
+        if (comparisonOperators) {
+        req.query.comparisonOperators = comparisonOperators.split(",").map(item => item.trim())
+        req.query.comparisonOperators.forEach(item => {
+            item.split(/[<>=!]/g)
+        })
+        //assuming that i can split the string
+        req.query.comparison
+    
+
+        console.log(req.query.comparisonOperators)
+
+        }
+
+    })
+
+
+
 
 app.get('*', function (req, res) {
     res.json({ msg: "Improper route. Check API docs plz." })
