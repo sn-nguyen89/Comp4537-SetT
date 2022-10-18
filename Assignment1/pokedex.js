@@ -201,19 +201,60 @@ app.get('/pokemonsAdvancedFiltering/', async (req , res) => {
         if (comparisonOperators) {
         req.query.comparisonOperators = comparisonOperators.split(",").map(item => item.trim())
         req.query.comparisonOperators.forEach(item => {
-            item.split(/[<>=!]/g)
-        })
-        //assuming that i can split the string
-        req.query.comparison
-    
+            //assuming that this line splits it and maps to parameter
+            var {stat, moogooseOperation, value} =  item.split(/[<>=!]/g)
+            //Need to turn string stats into something in the schema. HP needs to be base.HP or base.Attack
+            stat = "base." + stat
+            
+            switch (mongooseOperation) {
+                case('>'): {
+                    mongooseOperation = '$lt'
+                }
+                case('<'): {
+                    mongooseOperation = '$gt'
+                }
+                case('>='): {
+                    mongooseOperation = '$gte'
+                }
+                case('<='): {
+                    mongooseOperation = '$lte'
+                }
+                case('=='): {
+                    mongooseOperation = '$eq'
+                }
+                case('!='): {
+                    mongooseOperation = '$ne'
+                }
 
-        console.log(req.query.comparisonOperators)
+            }
+        })
+        
+
+
 
         }
-
+        //now that we have have switch the operations to something mongoose can handle we can use the find function
+        let pokemons = await pokemonModel.find({{stat: {mongooseOperation : value}}})
     })
 
-
+    app.patch("/pokemonsAdvancedUpdate", async (req, res)=>{
+        let pokemonId =0;
+        let {id,base,type,name,pushOperator} = req.query
+            pokemonId = id
+            if (pushOperator) {
+                //removes [ ] from string
+                pushOperator.replace('[', '')
+                pushOperator.replace(']', '')
+            req.query.pushOperator = {
+                //splits the string into 2 strings objects in an array
+            $in: pushOperator.split(",").map(item => item.trim())
+        }
+    }
+        
+        //since we got the ID and what we want to push, we can updateone with 
+        let pokemons = await pokemonModel.updateOne({ id: pokemonId }, { $push: { type: req.query.pushOperator }})
+      
+    })
 
 
 app.get('*', function (req, res) {
