@@ -30,11 +30,14 @@ start();
 
 app.use(express.json());
 
+let userType;
+
 const bcrypt = require("bcrypt");
 app.post(
   "/register",
   asyncWrapper(async (req, res) => {
     const { username, password, email } = req.body;
+    userType = username;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const userWithHashedPassword = { ...req.body, password: hashedPassword };
@@ -64,7 +67,19 @@ app.post(
       const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
       console.log(token);
       await pokeUser.findOneAndUpdate({ _id: user._id }, { token: token });
-      await tokenList.create({ token: token, blocked: false });
+      if (userType == "Admin") {
+        await tokenList.create({
+          token: token,
+          blocked: false,
+          userType: "Admin",
+        });
+      } else {
+        await tokenList.create({
+          token: token,
+          blocked: false,
+          userType: "User",
+        });
+      }
     }
 
     res.send("logged in sucessfully");

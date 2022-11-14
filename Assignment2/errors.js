@@ -71,6 +71,15 @@ class PokemonNoToken extends PokemonBadRequest {
   }
 }
 
+class PokemonNotAdmin extends PokemonBadRequest {
+  constructor(message) {
+    super(message);
+    this.name = "PokemonNotAdmin";
+    this.message = "Not admin";
+    this.pokeErrCode = 404;
+  }
+}
+
 module.exports = {
   PokemonBadRequest,
   PokemonBadRequestMissingID,
@@ -80,4 +89,5 @@ module.exports = {
   PokemonDuplicateError,
   PokemonNoSuchRouteError,
   PokemonNoToken,
+  PokemonNotAdmin,
 };

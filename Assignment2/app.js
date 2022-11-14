@@ -13,6 +13,7 @@ const {
   PokemonDuplicateError,
   PokemonNoSuchRouteError,
   PokemonNoToken,
+  PokemonNotAdmin,
 } = require("./errors.js");
 const cookieParser = require("cookie-parser");
 const tokenList = require("./tokenList");
@@ -43,16 +44,15 @@ const jwt = require("jsonwebtoken");
 const authUser = asyncWrapper(async (req, res, next) => {
   const token = req.query["token"];
   if (!token) {
-    throw new PokemonBadRequest("Access denied");
+    throw new PokemonNoToken("Access denied");
   }
   const tokenDB = await tokenList.findOne({ token: token });
   console.log(tokenDB);
   if (tokenDB.blocked) {
-    throw new PokemonBadRequest("Invalid token");
+    throw new PokemonNoToken("Invalid token");
   }
   try {
     const verified = jwt.verify(token, process.env.TOKEN_SECRET); // nothing happens if token is valid
-
     next();
   } catch (err) {
     throw new PokemonBadRequest("Invalid token");
@@ -71,6 +71,7 @@ app.get(
       .sort({ id: 1 })
       .skip(req.query["after"])
       .limit(req.query["count"]);
+    console.log(docs);
     res.json(docs);
     // } catch (err) { res.json(handleErr(err)) }
   })
@@ -90,20 +91,11 @@ app.get(
 
 const authAdmin = asyncWrapper(async (req, res, next) => {
   const token = req.query["token"];
-  if (!token) {
-    throw new PokemonBadRequest("Access denied");
-  }
   const tokenDB = await tokenList.findOne({ token: token });
-  console.log(tokenDB);
-  if (tokenDB.blocked) {
-    throw new PokemonBadRequest("Invalid token");
-  }
-  try {
-    const verified = jwt.verify(token, process.env.TOKEN_SECRET); // nothing happens if token is valid
-
+  if (tokenDB.userType === "Admin") {
     next();
-  } catch (err) {
-    throw new PokemonBadRequest("Invalid token");
+  } else {
+    throw new PokemonNotAdmin();
   }
 });
 
