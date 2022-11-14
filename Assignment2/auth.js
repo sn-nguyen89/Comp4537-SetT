@@ -4,7 +4,17 @@ const { asyncWrapper } = require("./asyncWrapper.js");
 const dotenv = require("dotenv");
 dotenv.config();
 const pokeUser = require("./pokeUser.js");
+const tokenList = require("./tokenList");
 const { connectDB } = require("./connectDB.js");
+const {
+  PokemonBadRequest,
+  PokemonBadRequestMissingID,
+  PokemonBadRequestMissingAfter,
+  PokemonDbError,
+  PokemonNotFoundError,
+  PokemonDuplicateError,
+  PokemonNoSuchRouteError,
+} = require("./errors.js");
 
 const app = express();
 
@@ -13,10 +23,7 @@ const start = asyncWrapper(async () => {
 
   app.listen(process.env.authPORT, (err) => {
     if (err) throw new PokemonDbError(err);
-    else
-      console.log(
-        `Phew! Server is running on port: ${process.env.authServerPORT}`
-      );
+    else console.log(`AUTH Server is running on port: ${process.env.authPORT}`);
   });
 });
 start();
@@ -32,7 +39,7 @@ app.post(
     const hashedPassword = await bcrypt.hash(password, salt);
     const userWithHashedPassword = { ...req.body, password: hashedPassword };
 
-    const user = await userModel.create(userWithHashedPassword);
+    const user = await pokeUser.create(userWithHashedPassword);
     res.send(user);
   })
 );
@@ -42,7 +49,7 @@ app.post(
   "/login",
   asyncWrapper(async (req, res) => {
     const { username, password } = req.body;
-    const user = await userModel.findOne({ username });
+    const user = await pokeUser.findOne({ username });
     if (!user) {
       throw new PokemonBadRequest("User not found");
     }
@@ -51,12 +58,13 @@ app.post(
       throw new PokemonBadRequest("Password is incorrect");
     }
     // Create and assign a token
-    // Create and assign a token
     if (user.token) {
       console.log(user.token);
     } else {
       const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-      await userModel.findOneAndUpdate({ _id: user._id }, { token: token });
+      console.log(token);
+      await pokeUser.findOneAndUpdate({ _id: user._id }, { token: token });
+      await tokenList.create({ token: token, blocked: false });
     }
 
     res.send("logged in sucessfully");
