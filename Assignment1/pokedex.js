@@ -228,9 +228,6 @@ app.get('/pokemonsAdvancedFiltering/', async (req , res) => {
 
             }
         })
-        
-
-
 
         }
         //now that we have have switch the operations to something mongoose can handle we can use the find function
@@ -245,15 +242,15 @@ app.get('/pokemonsAdvancedFiltering/', async (req , res) => {
                 //removes [ ] from string
                 pushOperator.replace('[', '')
                 pushOperator.replace(']', '')
-            req.query.pushOperator = {
-                //splits the string into 2 strings objects in an array
+                req.query.pushOperator = {
+                //splits the string into strings objects in an array
             $in: pushOperator.split(",").map(item => item.trim())
-        }
-    }
+                }
+            }
         
         //since we got the ID and what we want to push, we can updateone with 
         let pokemons = await pokemonModel.updateOne({ id: pokemonId }, { $push: { type: req.query.pushOperator }})
-      
+        res.send(pokemons)
     })
 
 

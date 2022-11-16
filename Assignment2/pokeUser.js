@@ -27,9 +27,9 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  // token: {
-  //   type: String,
-  // },
+  token: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("pokeUser", schema); //pokeUser is the name of the collection in the db

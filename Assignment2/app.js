@@ -47,6 +47,7 @@ const authUser = asyncWrapper(async (req, res, next) => {
     throw new PokemonNoToken("Access denied");
   }
   const tokenDB = await tokenList.findOne({ token: token });
+  if (!tokenDB) throw new PokemonNoToken("Invalid token");
   console.log(tokenDB);
   if (tokenDB.blocked) {
     throw new PokemonNoToken("Invalid token");
@@ -63,6 +64,7 @@ app.use(authUser);
 app.get(
   "/api/v1/pokemons",
   asyncWrapper(async (req, res) => {
+    console.log(req.cookies);
     if (!req.query["count"]) req.query["count"] = 10;
     if (!req.query["after"]) req.query["after"] = 0;
     // try {

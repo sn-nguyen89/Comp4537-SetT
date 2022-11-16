@@ -67,7 +67,7 @@ class PokemonNoToken extends PokemonBadRequest {
     super(message);
     this.name = "PokemonNoToken";
     this.message = "Invalid Token";
-    this.pokeErrCode = 404;
+    this.pokeErrCode = 400;
   }
 }
 
@@ -76,7 +76,25 @@ class PokemonNotAdmin extends PokemonBadRequest {
     super(message);
     this.name = "PokemonNotAdmin";
     this.message = "Not admin";
-    this.pokeErrCode = 404;
+    this.pokeErrCode = 400;
+  }
+}
+
+class PokemonNotUser extends PokemonBadRequest {
+  constructor(message) {
+    super(message);
+    this.name = "PokemonNotUser";
+    this.message = "Not a user";
+    this.pokeErrCode = 400;
+  }
+}
+
+class PokemonBadPassword extends PokemonBadRequest {
+  constructor(message) {
+    super(message);
+    this.name = "PokemonBadPassword";
+    this.message = "Wrong Password";
+    this.pokeErrCode = 400;
   }
 }
 
@@ -90,4 +108,6 @@ module.exports = {
   PokemonNoSuchRouteError,
   PokemonNoToken,
   PokemonNotAdmin,
+  PokemonNotUser,
+  PokemonBadPassword,
 };
